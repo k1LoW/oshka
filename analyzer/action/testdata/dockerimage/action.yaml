@@ -1,0 +1,11 @@
+inputs:
+  numOctocats:
+    description: 'Number of Octocats'
+    required: false
+    default: '1'
+  octocatEyeColor:
+    description: 'Eye color of the Octocats'
+    required: true
+runs:
+  using: 'docker'
+  image: 'docker://busybox:latest'
