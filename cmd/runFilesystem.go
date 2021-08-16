@@ -26,10 +26,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/k1LoW/oshka/analyzer"
 	"github.com/k1LoW/oshka/executer"
 	tdir "github.com/k1LoW/oshka/target/dir"
+	"github.com/olekukonko/tablewriter"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
@@ -86,12 +88,14 @@ var filesystemCmd = &cobra.Command{
 			}
 		}
 
-		cmd.Println("")
 		cmd.Println("Run results")
 		cmd.Println("===========")
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetHeader([]string{"Name", "Type", "Exit Code"})
 		for _, r := range e.Results() {
-			cmd.Printf("%s %s %d\n", r.Target.Type(), r.Target.Name(), r.ExitCode)
+			table.Append([]string{r.Target.Name(), r.Target.Type(), strconv.Itoa(r.ExitCode)})
 		}
+		table.Render()
 		return nil
 	},
 }
