@@ -12,11 +12,11 @@ func TestExtract(t *testing.T) {
 		action  string
 		wantErr bool
 	}{
-		//{"actions/cache@v2", false},
-		//{"actions/cache@main", false},
+		{"actions/cache@v2", false},
+		{"actions/cache@main", false},
 		{"github/codeql-action/init@v1", false},
-		//{"ruby/setup-ruby@473e4d8fe5dd94ee328fdfca9f8c9c7afc9dae5e", false},
-		//{"does-not/exists@v5", true},
+		{"ruby/setup-ruby@473e4d8fe5dd94ee328fdfca9f8c9c7afc9dae5e", false},
+		{"does-not/exists@v5", true},
 	}
 	root := t.TempDir()
 	for _, tt := range tests {

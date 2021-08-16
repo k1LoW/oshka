@@ -5,10 +5,12 @@ import (
 	"crypto/md5"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/storer"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 )
 
@@ -39,19 +41,10 @@ func (a *Action) Dir() string {
 }
 
 func (a *Action) Extract(ctx context.Context, dest string) error {
-	ownerrepo, tag, err := parse(a.action)
+	ownerrepo, _, tag, branchOrHash, err := parse(a.action)
 	if err != nil {
 		return err
 	}
-	refName := plumbing.ReferenceName("")
-	if tag != "" {
-		if strings.HasPrefix(tag, "v") {
-			refName = plumbing.ReferenceName(fmt.Sprintf("refs/tags/%s", tag))
-		} else {
-			refName = plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", tag))
-		}
-	}
-
 	if os.Getenv("GITHUB_SERVER_URL") != "" && os.Getenv("GITHUB_TOKEN") != "" {
 		url := fmt.Sprintf("%s/%s.git", os.Getenv("GITHUB_SERVER_URL"), ownerrepo)
 		r, err := git.PlainClone(dest, false, &git.CloneOptions{
@@ -68,15 +61,28 @@ func (a *Action) Extract(ctx context.Context, dest string) error {
 			if err != nil {
 				return err
 			}
-			if err := w.Checkout(&git.CheckoutOptions{
-				Branch: refName,
-			}); err != nil {
+			if tag != "" {
+				tagref, err := getTagRef(r, tag)
+				if err != nil {
+					return err
+				}
 				if err := w.Checkout(&git.CheckoutOptions{
-					Hash: plumbing.NewHash(tag),
+					Branch: tagref.Name(),
 				}); err != nil {
 					return err
 				}
+			} else if branchOrHash != "" {
+				if err := w.Checkout(&git.CheckoutOptions{
+					Branch: plumbing.NewBranchReferenceName(branchOrHash),
+				}); err != nil {
+					if err := w.Checkout(&git.CheckoutOptions{
+						Hash: plumbing.NewHash(branchOrHash),
+					}); err != nil {
+						return err
+					}
+				}
 			}
+
 			return nil
 		}
 		// fallback to the code following here
@@ -95,26 +101,75 @@ func (a *Action) Extract(ctx context.Context, dest string) error {
 	if err != nil {
 		return err
 	}
-	if err := w.Checkout(&git.CheckoutOptions{
-		Branch: refName,
-	}); err != nil {
+
+	if tag != "" {
+		tagref, err := getTagRef(r, tag)
+		if err != nil {
+			return err
+		}
 		if err := w.Checkout(&git.CheckoutOptions{
-			Hash: plumbing.NewHash(tag),
+			Branch: tagref.Name(),
 		}); err != nil {
 			return err
 		}
+	} else if branchOrHash != "" {
+		if err := w.Checkout(&git.CheckoutOptions{
+			Branch: plumbing.NewBranchReferenceName(branchOrHash),
+		}); err != nil {
+			if err := w.Checkout(&git.CheckoutOptions{
+				Hash: plumbing.NewHash(branchOrHash),
+			}); err != nil {
+				return err
+			}
+		}
 	}
+
 	return nil
 }
 
-func parse(action string) (owenerrepo string, tag string, err error) {
+var verRe = regexp.MustCompile(`^v[0-9][0-9.]*$`)
+
+func getTagRef(r *git.Repository, tag string) (*plumbing.Reference, error) {
+	tagrefs, err := r.Tags()
+	if err != nil {
+		return nil, err
+	}
+	var ref *plumbing.Reference
+	if err := tagrefs.ForEach(func(t *plumbing.Reference) error {
+		if t.Name().Short() == tag {
+			ref = t
+			return storer.ErrStop
+		}
+		if strings.Contains(t.Name().Short(), tag) {
+			ref = t
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return ref, nil
+}
+
+func parse(action string) (string, string, string, string, error) {
 	if strings.Count(action, "/") == 0 {
-		return "", "", fmt.Errorf("invalid action: %s", action)
+		return "", "", "", "", fmt.Errorf("invalid action: %s", action)
 	}
 	if !strings.Contains(action, "@") {
-		return "", "", fmt.Errorf("invalid action: %s", action)
+		return "", "", "", "", fmt.Errorf("invalid action: %s", action)
 	}
 	splitted := strings.Split(action, "@")
 	splitted2 := strings.Split(splitted[0], "/")
-	return strings.Join(splitted2[0:2], "/"), splitted[1], nil
+	ownerrepo := strings.Join(splitted2[0:2], "/")
+	path := ""
+	if len(splitted2) > 2 {
+		path = strings.Join(splitted2[2:], "/")
+	}
+	tag := ""
+	branchOrHash := ""
+	if verRe.MatchString(splitted[1]) {
+		tag = splitted[1]
+	} else {
+		branchOrHash = splitted[1]
+	}
+	return ownerrepo, path, tag, branchOrHash, nil
 }
