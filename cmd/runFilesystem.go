@@ -30,7 +30,7 @@ import (
 
 	"github.com/k1LoW/oshka/analyzer"
 	"github.com/k1LoW/oshka/executer"
-	tdir "github.com/k1LoW/oshka/target/dir"
+	"github.com/k1LoW/oshka/target/local"
 	"github.com/olekukonko/tablewriter"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -50,7 +50,7 @@ var filesystemCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		t, err := tdir.New(dir)
+		t, err := local.New(dir)
 		if err != nil {
 			return err
 		}
