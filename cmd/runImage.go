@@ -38,8 +38,8 @@ import (
 var imageCmd = &cobra.Command{
 	Use:     "image [IMAGE]",
 	Aliases: []string{"i"},
-	Short:   "(alias: i) execute commands starting from docker image",
-	Long:    `(alias: i) execute commands starting from docker image.`,
+	Short:   "(alias: i ) execute commands starting from docker image",
+	Long:    `(alias: i ) execute commands starting from docker image.`,
 	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()

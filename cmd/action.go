@@ -38,8 +38,8 @@ import (
 var actionCmd = &cobra.Command{
 	Use:     "action [ACTION]",
 	Aliases: []string{"a"},
-	Short:   "(alias: a) execute commands starting from action for GitHub Actions",
-	Long:    `(alias: a) execute commands starting from action for GitHub Actions.`,
+	Short:   "(alias: a ) execute commands starting from action for GitHub Actions",
+	Long:    `(alias: a ) execute commands starting from action for GitHub Actions.`,
 	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
