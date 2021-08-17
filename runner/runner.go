@@ -26,8 +26,10 @@ func New(targets []target.Target, e *executer.Executer) (*Runner, error) {
 
 func (r *Runner) Run(ctx context.Context, depth int) error {
 	extractRoot := os.TempDir()
+	log.Info().Msg(fmt.Sprintf("Create temporary directory for extracting supply chains: %s", extractRoot))
 	defer func() {
 		_ = os.RemoveAll(extractRoot)
+		log.Info().Msg(fmt.Sprintf("Cleanup temporary directory for extracting supply chains: %s", extractRoot))
 	}()
 	targets := r.targets
 	var err error
