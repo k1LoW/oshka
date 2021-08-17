@@ -64,10 +64,10 @@ var actionCmd = &cobra.Command{
 		cmd.Println("Run results")
 		cmd.Println("===========")
 		table := tablewriter.NewWriter(os.Stdout)
-		table.SetHeader([]string{"Name", "Type", "Exit Code"})
+		table.SetHeader([]string{"Name", "Type", "Command", "Exit Code"})
 		table.SetAlignment(tablewriter.ALIGN_LEFT)
 		for _, r := range e.Results() {
-			table.Append([]string{r.Target.Name(), r.Target.Type(), strconv.Itoa(r.ExitCode)})
+			table.Append([]string{r.Target.Name(), r.Target.Type(), r.Command, strconv.Itoa(r.ExitCode)})
 		}
 		table.Render()
 
