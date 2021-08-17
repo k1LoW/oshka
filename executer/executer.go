@@ -43,13 +43,13 @@ func New(in []string) (*Executer, error) {
 }
 
 func (e *Executer) Execute(ctx context.Context, t target.Target, dir string) error {
-	log.Info().Msg(fmt.Sprintf("Run command on %s", dir))
 	for _, c := range e.commands {
 		r := &Result{
 			Command: strings.Join(c, " "),
 			Dir:     dir,
 			Target:  t,
 		}
+		log.Info().Msg(fmt.Sprintf("Run `%s` on %s", r.Command, r.Dir))
 		cmd := exec.CommandContext(ctx, c[0]) // #nosec G204
 		if len(c) > 1 {
 			cmd = exec.CommandContext(ctx, c[0], c[1:]...) // #nosec G204

@@ -29,17 +29,17 @@ import (
 	"github.com/k1LoW/oshka/executer"
 	"github.com/k1LoW/oshka/runner"
 	"github.com/k1LoW/oshka/target"
-	"github.com/k1LoW/oshka/target/local"
+	"github.com/k1LoW/oshka/target/image"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
-// filesystemCmd represents the filesystem command
-var filesystemCmd = &cobra.Command{
-	Use:     "filesystem [DIR]",
-	Aliases: []string{"fs"},
-	Short:   "(alias: fs) execute commands starting from local filesystem",
-	Long:    `(alias: fs) execute commands starting from local filesystem.`,
+// imageCmd represents the image command
+var imageCmd = &cobra.Command{
+	Use:     "image [IMAGE]",
+	Aliases: []string{"i"},
+	Short:   "(alias: i ) execute commands starting from docker image",
+	Long:    `(alias: i ) execute commands starting from docker image.`,
 	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
@@ -47,7 +47,7 @@ var filesystemCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		t, err := local.New(args[0])
+		t, err := image.New(args[0])
 		if err != nil {
 			return err
 		}
@@ -75,7 +75,7 @@ var filesystemCmd = &cobra.Command{
 }
 
 func init() {
-	runCmd.AddCommand(filesystemCmd)
-	filesystemCmd.Flags().StringSliceVarP(&commands, "command", "c", []string{"trivy fs --exit-code 1 ."}, "Command to execute")
-	filesystemCmd.Flags().IntVarP(&depth, "depth", "", 1, "Depth of extracting supply chains")
+	runCmd.AddCommand(imageCmd)
+	imageCmd.Flags().StringSliceVarP(&commands, "command", "c", []string{"trivy fs --exit-code 1 ."}, "Command to execute")
+	imageCmd.Flags().IntVarP(&depth, "depth", "", 1, "Depth of extracting supply chains")
 }
