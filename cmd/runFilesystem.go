@@ -88,10 +88,12 @@ var filesystemCmd = &cobra.Command{
 			}
 		}
 
+		cmd.Println("")
 		cmd.Println("Run results")
 		cmd.Println("===========")
 		table := tablewriter.NewWriter(os.Stdout)
 		table.SetHeader([]string{"Name", "Type", "Exit Code"})
+		table.SetAlignment(tablewriter.ALIGN_LEFT)
 		for _, r := range e.Results() {
 			table.Append([]string{r.Target.Name(), r.Target.Type(), strconv.Itoa(r.ExitCode)})
 		}
