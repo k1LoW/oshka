@@ -9,7 +9,10 @@ import (
 
 	"github.com/google/go-containerregistry/pkg/crane"
 	"github.com/k1LoW/oshka/internal"
+	"github.com/k1LoW/oshka/target"
 )
+
+var _ target.Target = (*Image)(nil)
 
 type Image struct {
 	image string
@@ -52,5 +55,18 @@ func (i *Image) Extract(ctx context.Context, dest string) error {
 		return err
 	}
 	err = <-errChan
-	return err
+
+	if err != nil {
+		return err
+	}
+
+	et := new(target.ExtractedTarget)
+	if err := et.SetTarget(i, dest); err != nil {
+		return err
+	}
+	if err := et.Put(); err != nil {
+		return err
+	}
+
+	return nil
 }

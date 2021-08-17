@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/go-git/go-git/v5 v5.4.2
+	github.com/goccy/go-json v0.7.6
 	github.com/goccy/go-yaml v1.9.2
 	github.com/google/go-containerregistry v0.6.0
 	github.com/k1LoW/osfs v0.1.0

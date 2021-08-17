@@ -15,9 +15,10 @@ func TestAnalize(t *testing.T) {
 		path string
 		want int
 	}{
-		{"testdata/nodejs", 0},
-		{"testdata/dockerfile", 1},
-		{"testdata/dockerimage", 1},
+		//		{"testdata/nodejs", 0},
+		//		{"testdata/dockerfile", 1},
+		//		{"testdata/dockerimage", 1},
+		{"testdata/extracted_target", 1},
 	}
 	dir := t.TempDir()
 	for _, tt := range tests {

@@ -14,7 +14,10 @@ import (
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/daemon"
 	"github.com/k1LoW/oshka/internal"
+	"github.com/k1LoW/oshka/target"
 )
+
+var _ target.Target = (*Dockerfile)(nil)
 
 type Dockerfile struct {
 	dockerfile string
@@ -99,5 +102,14 @@ func (d *Dockerfile) Extract(ctx context.Context, dest string) error {
 		return err
 	}
 	err = <-errChan
+
+	et := new(target.ExtractedTarget)
+	if err := et.SetTarget(d, dest); err != nil {
+		return err
+	}
+	if err := et.Put(); err != nil {
+		return err
+	}
+
 	return err
 }

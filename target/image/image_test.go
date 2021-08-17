@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/k1LoW/oshka/target"
 )
 
 func TestExtract(t *testing.T) {
@@ -43,6 +45,11 @@ func TestExtract(t *testing.T) {
 		}
 		if !fi.IsDir() {
 			t.Errorf("%s should be directory", etcDir)
+		}
+
+		infoJSON := filepath.Join(dest, target.ExtractedTargetFile)
+		if _, err := os.Stat(infoJSON); err != nil {
+			t.Error(err)
 		}
 	}
 }
