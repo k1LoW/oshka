@@ -28,7 +28,7 @@ func TestAnalyze(t *testing.T) {
 	}
 
 	got := len(targets)
-	if want := 6; got != want {
+	if want := 8; got != want {
 		t.Errorf("got %v\nwant %v", got, want)
 	}
 }

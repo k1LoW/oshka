@@ -24,12 +24,17 @@ type WorkflowFile struct {
 }
 
 type Job struct {
-	Container interface{} `yaml:"container,omitempty"`
-	Steps     []Step      `yaml:"steps,omitempty"`
+	Container interface{}        `yaml:"container,omitempty"`
+	Steps     []Step             `yaml:"steps,omitempty"`
+	Services  map[string]Service `yaml:"services,omitempty"`
 }
 
 type Step struct {
 	Uses string `yaml:"uses,omitempty"`
+}
+
+type Service struct {
+	Image string `yaml:"image"`
 }
 
 func (w *Workflows) Analyze(ctx context.Context, fsys fs.FS) ([]target.Target, error) {
@@ -93,6 +98,17 @@ func (w *Workflows) Analyze(ctx context.Context, fsys fs.FS) ([]target.Target, e
 					}
 					targets = append(targets, t)
 				}
+			}
+
+			for _, s := range j.Services {
+				if s.Image == "" {
+					continue
+				}
+				t, err := image.New(s.Image)
+				if err != nil {
+					return nil, err
+				}
+				targets = append(targets, t)
 			}
 		}
 	}
