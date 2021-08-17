@@ -30,7 +30,7 @@ import (
 
 	"github.com/k1LoW/oshka/analyzer"
 	"github.com/k1LoW/oshka/executer"
-	tdir "github.com/k1LoW/oshka/target/dir"
+	"github.com/k1LoW/oshka/target/local"
 	"github.com/olekukonko/tablewriter"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -40,8 +40,8 @@ import (
 var filesystemCmd = &cobra.Command{
 	Use:     "filesystem [DIR]",
 	Aliases: []string{"fs"},
-	Short:   "(alias: fs) filesystem",
-	Long:    `(alias: fs) filesystem.`,
+	Short:   "(alias: fs) execute commands starting from local filesystem",
+	Long:    `(alias: fs) execute commands starting from local filesystem.`,
 	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
@@ -50,7 +50,7 @@ var filesystemCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		t, err := tdir.New(dir)
+		t, err := local.New(dir)
 		if err != nil {
 			return err
 		}
@@ -103,5 +103,5 @@ var filesystemCmd = &cobra.Command{
 func init() {
 	runCmd.AddCommand(filesystemCmd)
 	filesystemCmd.Flags().StringSliceVarP(&commands, "command", "c", []string{"trivy fs --exit-code 1 ."}, "Command to execute")
-	filesystemCmd.Flags().IntVarP(&depth, "depth", "", 2, "Depth of extracting the supply chain")
+	filesystemCmd.Flags().IntVarP(&depth, "depth", "", 1, "Depth of extracting supply chains")
 }

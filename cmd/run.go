@@ -33,8 +33,8 @@ var (
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "run",
-	Long:  `run.`,
+	Short: "execute commands on filesystem/resouces extracted supply chains",
+	Long:  `execute commands on filesystem/resouces extracted supply chains.`,
 }
 
 func init() {

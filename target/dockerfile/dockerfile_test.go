@@ -2,11 +2,13 @@ package dockerfile
 
 import (
 	"context"
-	"crypto/md5"
+	"crypto/sha256"
 	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/k1LoW/oshka/target"
 )
 
 func TestExtract(t *testing.T) {
@@ -28,11 +30,11 @@ RUN touch /etc/test
 	root := t.TempDir()
 	for _, tt := range tests {
 		ctx := context.Background()
-		dest := filepath.Join(root, fmt.Sprintf("%x", md5.Sum(tt.files[tt.dockerfile])))
+		dest := filepath.Join(root, fmt.Sprintf("%x", sha256.Sum256(tt.files[tt.dockerfile])))
 		if err := os.MkdirAll(dest, os.ModePerm); err != nil {
 			t.Fatal(err)
 		}
-		d, err := New(tt.dockerfile, tt.files)
+		d, err := New("from", tt.dockerfile, tt.files)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -51,6 +53,11 @@ RUN touch /etc/test
 		}
 		if fi.IsDir() {
 			t.Errorf("%s should be file", testFile)
+		}
+
+		infoJSON := filepath.Join(dest, target.ExtractedTargetFile)
+		if _, err := os.Stat(infoJSON); err != nil {
+			t.Error(err)
 		}
 	}
 }

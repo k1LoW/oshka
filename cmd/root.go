@@ -31,8 +31,8 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:          "oshka",
-	Short:        "oshka",
-	Long:         `oshka.`,
+	Short:        "oshka is a tool for extracting nested CI/CD supply chains and executing commands",
+	Long:         `oshka is a tool for extracting nested CI/CD supply chains and executing commands.`,
 	Version:      version.Version,
 	SilenceUsage: true,
 }

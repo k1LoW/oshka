@@ -2,7 +2,6 @@ package action
 
 import (
 	"context"
-	"crypto/md5"
 	"fmt"
 	"os"
 	"regexp"
@@ -12,7 +11,10 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/storer"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
+	"github.com/k1LoW/oshka/target"
 )
+
+var _ target.Target = (*Action)(nil)
 
 type Action struct {
 	action string
@@ -25,7 +27,7 @@ func New(action string) (*Action, error) {
 }
 
 func (a *Action) Id() string {
-	return fmt.Sprintf("action-%x", md5.Sum([]byte(a.action)))
+	return fmt.Sprintf("action-%s", target.HashForID([]byte(a.action)))
 }
 
 func (a *Action) Name() string {
@@ -41,7 +43,7 @@ func (a *Action) Dir() string {
 }
 
 func (a *Action) Extract(ctx context.Context, dest string) error {
-	ownerrepo, _, tag, branchOrHash, err := parse(a.action)
+	ownerrepo, path, tag, branchOrHash, err := parse(a.action)
 	if err != nil {
 		return err
 	}
@@ -83,6 +85,15 @@ func (a *Action) Extract(ctx context.Context, dest string) error {
 				}
 			}
 
+			et := new(target.ExtractedTarget)
+			if err := et.SetTarget(a, dest); err != nil {
+				return err
+			}
+			et.ActionYAMLPath = path
+			if err := et.Put(); err != nil {
+				return err
+			}
+
 			return nil
 		}
 		// fallback to the code following here
@@ -122,6 +133,15 @@ func (a *Action) Extract(ctx context.Context, dest string) error {
 				return err
 			}
 		}
+	}
+
+	et := new(target.ExtractedTarget)
+	if err := et.SetTarget(a, dest); err != nil {
+		return err
+	}
+	et.ActionYAMLPath = path
+	if err := et.Put(); err != nil {
+		return err
 	}
 
 	return nil

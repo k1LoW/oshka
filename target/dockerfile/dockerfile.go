@@ -2,7 +2,6 @@ package dockerfile
 
 import (
 	"context"
-	"crypto/md5"
 	"fmt"
 	"io"
 	"os"
@@ -14,29 +13,34 @@ import (
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/daemon"
 	"github.com/k1LoW/oshka/internal"
+	"github.com/k1LoW/oshka/target"
 )
 
+var _ target.Target = (*Dockerfile)(nil)
+
 type Dockerfile struct {
+	from       string
 	dockerfile string
 	files      map[string][]byte
 }
 
-func New(dockerfile string, files map[string][]byte) (*Dockerfile, error) {
+func New(from, dockerfile string, files map[string][]byte) (*Dockerfile, error) {
 	if _, err := exec.LookPath("docker"); err != nil {
 		return nil, err
 	}
 	return &Dockerfile{
+		from:       from,
 		dockerfile: dockerfile,
 		files:      files,
 	}, nil
 }
 
 func (d *Dockerfile) Id() string {
-	return fmt.Sprintf("dockerfile-%x", md5.Sum(d.files[d.dockerfile]))
+	return fmt.Sprintf("dockerfile-%s", target.HashForID(d.files[d.dockerfile]))
 }
 
 func (d *Dockerfile) Name() string {
-	return d.Id()
+	return fmt.Sprintf("%s/%s", d.from, d.dockerfile)
 }
 
 func (d *Dockerfile) Type() string {
@@ -70,7 +74,7 @@ func (d *Dockerfile) Extract(ctx context.Context, dest string) error {
 		dir = "."
 	}
 
-	cmd := exec.CommandContext(ctx, "docker", "build", "-t", tag, "-f", d.dockerfile, dir)
+	cmd := exec.CommandContext(ctx, "docker", "build", "-t", tag, "-f", d.dockerfile, dir) // #nosec G204
 	cmd.Dir = wd
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -78,7 +82,7 @@ func (d *Dockerfile) Extract(ctx context.Context, dest string) error {
 		return err
 	}
 	defer func() {
-		_ = exec.Command("docker", "rmi", tag).Run()
+		_ = exec.Command("docker", "rmi", tag).Run() // #nosec G204
 	}()
 
 	ref, err := name.ParseReference(tag)
@@ -99,5 +103,14 @@ func (d *Dockerfile) Extract(ctx context.Context, dest string) error {
 		return err
 	}
 	err = <-errChan
+
+	et := new(target.ExtractedTarget)
+	if err := et.SetTarget(d, dest); err != nil {
+		return err
+	}
+	if err := et.Put(); err != nil {
+		return err
+	}
+
 	return err
 }
