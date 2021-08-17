@@ -38,7 +38,7 @@ func Untar(r io.Reader, dest string) error {
 			if err := os.MkdirAll(filepath.Dir(path), 0750); err != nil {
 				return err
 			}
-			of, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, mode.Perm())
+			of, err := os.OpenFile(filepath.Clean(path), os.O_RDWR|os.O_CREATE|os.O_TRUNC, mode.Perm())
 			if err != nil {
 				return err
 			}
