@@ -23,16 +23,14 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"os"
-	"path/filepath"
 	"strconv"
 
-	"github.com/k1LoW/oshka/analyzer"
 	"github.com/k1LoW/oshka/executer"
+	"github.com/k1LoW/oshka/runner"
+	"github.com/k1LoW/oshka/target"
 	"github.com/k1LoW/oshka/target/local"
 	"github.com/olekukonko/tablewriter"
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -54,38 +52,13 @@ var filesystemCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		if err := e.Execute(ctx, t, dir); err != nil {
+		targets := []target.Target{t}
+		r, err := runner.New(targets, e)
+		if err != nil {
 			return err
 		}
-
-		dirs := []string{dir}
-		extractRoot := os.TempDir()
-		defer func() {
-			_ = os.RemoveAll(extractRoot)
-		}()
-
-		for i := 0; i < depth; i++ {
-			targets, err := analyzer.Analyze(ctx, dirs)
-			if err != nil {
-				return err
-			}
-			dirs = []string{}
-			for _, t := range targets {
-				dest := filepath.Join(extractRoot, t.Dir())
-				if _, err := os.Stat(dest); err == nil {
-					// already extracted
-					continue
-				}
-				log.Info().Msg(fmt.Sprintf("Extract %s %s to %s", t.Type(), t.Name(), dest))
-				if err := t.Extract(ctx, dest); err != nil {
-					return err
-				}
-				if err := e.Execute(ctx, t, dest); err != nil {
-					return err
-				}
-
-				dirs = append(dirs, dest)
-			}
+		if err := r.Run(ctx, depth); err != nil {
+			return err
 		}
 
 		cmd.Println("")
