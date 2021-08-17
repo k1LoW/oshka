@@ -165,6 +165,36 @@ $
 $ oshka run action actions/cache@v2
 ```
 
+<details>
+
+<summary>Result</summary>
+
+``` console
+$ oshka run action actions/cache@v2
+2021-08-18T02:17:18+09:00 [INFO] Create temporary directory for extracting supply chains: /var/folders/fp/hk95_wsj7s18mmc9drvrxdp1tt294n/T/
+2021-08-18T02:17:18+09:00 [INFO] Extract action actions/cache@v2 to /var/folders/fp/hk95_wsj7s18mmc9drvrxdp1tt294n/T/actions/cache@v2
+
+[...]
+
+Run results
+===========
++-----------------------------------+--------+-----------+
+|               NAME                |  TYPE  | EXIT CODE |
++-----------------------------------+--------+-----------+
+| actions/cache@v2                  | action | 0         |
+| ubuntu:latest                     | image  | 1         |
+| datadog/squid:latest              | image  | 1         |
+| actions/checkout@v2               | action | 1         |
+| github/codeql-action/init@v1      | action | 1         |
+| github/codeql-action/autobuild@v1 | action | 1         |
+| github/codeql-action/analyze@v1   | action | 1         |
+| actions/setup-node@v1             | action | 1         |
++-----------------------------------+--------+-----------+
+$
+```
+
+</details>
+
 ### Scan more deep supply chains
 
 ``` console
