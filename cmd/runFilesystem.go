@@ -103,5 +103,5 @@ var filesystemCmd = &cobra.Command{
 func init() {
 	runCmd.AddCommand(filesystemCmd)
 	filesystemCmd.Flags().StringSliceVarP(&commands, "command", "c", []string{"trivy fs --exit-code 1 ."}, "Command to execute")
-	filesystemCmd.Flags().IntVarP(&depth, "depth", "", 1, "Depth of extracting the supply chain")
+	filesystemCmd.Flags().IntVarP(&depth, "depth", "", 1, "Depth of extracting supply chains")
 }
