@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/k1LoW/oshka/target"
+	"github.com/otiai10/copy"
 )
 
 var _ target.Target = (*Local)(nil)
@@ -41,5 +42,20 @@ func (l *Local) Type() string {
 }
 
 func (l *Local) Extract(ctx context.Context, dest string) error {
+	if l.dir == dest {
+		return nil
+	}
+	if err := copy.Copy(l.dir, dest, copy.Options{}); err != nil {
+		return err
+	}
+
+	et := new(target.ExtractedTarget)
+	if err := et.SetTarget(l, dest); err != nil {
+		return err
+	}
+	if err := et.Put(); err != nil {
+		return err
+	}
+
 	return nil
 }
