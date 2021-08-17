@@ -25,13 +25,13 @@ Because most tools can be run on the filesystem, oshka has a strategy of deployi
 ( The default execution `--command` is `trivy fs --exit-code 1 .` )
 
 ``` console
-$ oshka fs .
+$ oshka run fs .
 ```
 
 ### Scan action of GitHub Actions and supply chains for vulnerabilities using Trivy
 
 ``` console
-$ oshka action actions/cache@v2
+$ oshka run action actions/cache@v2
 ```
 
 ## Supported supply chains
