@@ -43,12 +43,11 @@ var filesystemCmd = &cobra.Command{
 	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
-		dir := args[0]
 		e, err := executer.New(commands)
 		if err != nil {
 			return err
 		}
-		t, err := local.New(dir)
+		t, err := local.New(args[0])
 		if err != nil {
 			return err
 		}

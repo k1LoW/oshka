@@ -49,7 +49,7 @@ func (e *Executer) Execute(ctx context.Context, t target.Target, dir string) err
 			Dir:     dir,
 			Target:  t,
 		}
-		log.Info().Msg(fmt.Sprintf("Run %s on %s", r.Command, r.Dir))
+		log.Info().Msg(fmt.Sprintf("Run `%s` on %s", r.Command, r.Dir))
 		cmd := exec.CommandContext(ctx, c[0]) // #nosec G204
 		if len(c) > 1 {
 			cmd = exec.CommandContext(ctx, c[0], c[1:]...) // #nosec G204
