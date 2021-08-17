@@ -19,15 +19,17 @@ import (
 var _ target.Target = (*Dockerfile)(nil)
 
 type Dockerfile struct {
+	from       string
 	dockerfile string
 	files      map[string][]byte
 }
 
-func New(dockerfile string, files map[string][]byte) (*Dockerfile, error) {
+func New(from, dockerfile string, files map[string][]byte) (*Dockerfile, error) {
 	if _, err := exec.LookPath("docker"); err != nil {
 		return nil, err
 	}
 	return &Dockerfile{
+		from:       from,
 		dockerfile: dockerfile,
 		files:      files,
 	}, nil
@@ -38,7 +40,7 @@ func (d *Dockerfile) Id() string {
 }
 
 func (d *Dockerfile) Name() string {
-	return d.Id()
+	return fmt.Sprintf("%s/%s", d.from, d.dockerfile)
 }
 
 func (d *Dockerfile) Type() string {

@@ -32,7 +32,7 @@ type Runs struct {
 
 func (a *Action) Analyze(ctx context.Context, fsys fs.FS) ([]target.Target, error) {
 	targets := []target.Target{}
-	f, path, err := openActionYAML(fsys)
+	f, et, err := openActionYAML(fsys)
 	if err != nil {
 		return targets, nil
 	}
@@ -54,7 +54,7 @@ func (a *Action) Analyze(ctx context.Context, fsys fs.FS) ([]target.Target, erro
 		}
 		targets = append(targets, t)
 	} else {
-		df := filepath.Join(path, af.Runs.Image)
+		df := filepath.Clean(filepath.Join(et.ActionYAMLPath, af.Runs.Image))
 		files := map[string][]byte{}
 
 		f, err := fsys.Open(df)
@@ -102,7 +102,7 @@ func (a *Action) Analyze(ctx context.Context, fsys fs.FS) ([]target.Target, erro
 			files[df] = b
 		}
 
-		t, err := dockerfile.New(df, files)
+		t, err := dockerfile.New(et.Name, df, files)
 		if err != nil {
 			return nil, err
 		}
@@ -112,11 +112,11 @@ func (a *Action) Analyze(ctx context.Context, fsys fs.FS) ([]target.Target, erro
 	return targets, nil
 }
 
-func openActionYAML(fsys fs.FS) (fs.File, string, error) {
+func openActionYAML(fsys fs.FS) (fs.File, *target.ExtractedTarget, error) {
+	et := new(target.ExtractedTarget)
 	path := ""
 	tf, err := fsys.Open(target.ExtractedTargetFile)
 	if err == nil {
-		et := new(target.ExtractedTarget)
 		err := json.NewDecoder(tf).Decode(et)
 		if err == nil {
 			path = et.ActionYAMLPath
@@ -126,8 +126,8 @@ func openActionYAML(fsys fs.FS) (fs.File, string, error) {
 	if err != nil {
 		f, err = fsys.Open(filepath.Join(path, "action.yaml"))
 		if err != nil {
-			return nil, "", err
+			return nil, nil, err
 		}
 	}
-	return f, path, nil
+	return f, et, nil
 }
