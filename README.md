@@ -34,6 +34,12 @@ $ oshka run fs .
 $ oshka run action actions/cache@v2
 ```
 
+### Scan more deep supply chains
+
+``` console
+$ oshka run fs . --depth 3
+```
+
 ## Supported supply chains
 
 - GitHub Actions
