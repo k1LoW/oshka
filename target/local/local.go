@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/k1LoW/oshka/target"
 	"github.com/otiai10/copy"
@@ -46,12 +45,8 @@ func (l *Local) Extract(ctx context.Context, dest string) error {
 	if l.dir == dest {
 		return nil
 	}
-	opt := copy.Options{
-		Skip: func(src string) (bool, error) {
-			return strings.HasSuffix(src, ".git"), nil
-		},
-	}
-	if err := copy.Copy(l.dir, dest, opt); err != nil {
+
+	if err := copy.Copy(l.dir, dest, copy.Options{}); err != nil {
 		return err
 	}
 
@@ -62,4 +57,6 @@ func (l *Local) Extract(ctx context.Context, dest string) error {
 	if err := et.Put(); err != nil {
 		return err
 	}
+
+	return nil
 }
