@@ -2,6 +2,7 @@ package local
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/k1LoW/oshka/target"
@@ -24,11 +25,11 @@ func New(dir string) (*Local, error) {
 }
 
 func (l *Local) Id() string {
-	return l.dir
+	return fmt.Sprintf("local-%s", target.HashForID([]byte(l.dir)))
 }
 
 func (l *Local) Dir() string {
-	return l.dir
+	return l.Id()
 }
 
 func (l *Local) Name() string {

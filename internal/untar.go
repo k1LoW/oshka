@@ -2,12 +2,15 @@ package internal
 
 import (
 	"archive/tar"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
 )
+
+var maxCopySize int64 = 1024 * 1024 * 1024 * 5 // 5GB
 
 func Untar(r io.Reader, dest string) error {
 	tr := tar.NewReader(r)
@@ -28,20 +31,23 @@ func Untar(r io.Reader, dest string) error {
 		fi := f.FileInfo()
 		mode := fi.Mode()
 		if mode.IsDir() {
-			if err := os.MkdirAll(path, 0755); err != nil {
+			if err := os.MkdirAll(path, 0750); err != nil {
 				return err
 			}
 		} else {
-			if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+			if err := os.MkdirAll(filepath.Dir(path), 0750); err != nil {
 				return err
 			}
 			of, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, mode.Perm())
 			if err != nil {
 				return err
 			}
-			if _, err := io.Copy(of, tr); err != nil {
-				_ = of.Close()
+			w, err := io.CopyN(of, tr, maxCopySize)
+			if !errors.Is(err, io.EOF) {
 				return err
+			}
+			if w > maxCopySize {
+				return fmt.Errorf("copy size error: %d > %d", w, maxCopySize)
 			}
 			if err := of.Close(); err != nil {
 				return err

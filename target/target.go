@@ -2,6 +2,8 @@ package target
 
 import (
 	"context"
+	"crypto/sha256"
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -43,7 +45,13 @@ func (e *ExtractedTarget) Put() error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 
 	return json.NewEncoder(f).Encode(e)
+}
+
+func HashForID(b []byte) string {
+	return fmt.Sprintf("%x", sha256.Sum256(b))[:7]
 }

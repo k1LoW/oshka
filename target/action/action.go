@@ -2,7 +2,6 @@ package action
 
 import (
 	"context"
-	"crypto/md5"
 	"fmt"
 	"os"
 	"regexp"
@@ -28,7 +27,7 @@ func New(action string) (*Action, error) {
 }
 
 func (a *Action) Id() string {
-	return fmt.Sprintf("action-%x", md5.Sum([]byte(a.action)))
+	return fmt.Sprintf("action-%s", target.HashForID([]byte(a.action)))
 }
 
 func (a *Action) Name() string {

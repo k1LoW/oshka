@@ -2,7 +2,6 @@ package dockerfile
 
 import (
 	"context"
-	"crypto/md5"
 	"fmt"
 	"io"
 	"os"
@@ -35,7 +34,7 @@ func New(dockerfile string, files map[string][]byte) (*Dockerfile, error) {
 }
 
 func (d *Dockerfile) Id() string {
-	return fmt.Sprintf("dockerfile-%x", md5.Sum(d.files[d.dockerfile]))
+	return fmt.Sprintf("dockerfile-%s", target.HashForID(d.files[d.dockerfile]))
 }
 
 func (d *Dockerfile) Name() string {
@@ -73,7 +72,7 @@ func (d *Dockerfile) Extract(ctx context.Context, dest string) error {
 		dir = "."
 	}
 
-	cmd := exec.CommandContext(ctx, "docker", "build", "-t", tag, "-f", d.dockerfile, dir)
+	cmd := exec.CommandContext(ctx, "docker", "build", "-t", tag, "-f", d.dockerfile, dir) // #nosec G204
 	cmd.Dir = wd
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -81,7 +80,7 @@ func (d *Dockerfile) Extract(ctx context.Context, dest string) error {
 		return err
 	}
 	defer func() {
-		_ = exec.Command("docker", "rmi", tag).Run()
+		_ = exec.Command("docker", "rmi", tag).Run() // #nosec G204
 	}()
 
 	ref, err := name.ParseReference(tag)

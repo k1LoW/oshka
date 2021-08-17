@@ -2,7 +2,6 @@ package image
 
 import (
 	"context"
-	"crypto/md5"
 	"fmt"
 	"io"
 	"strings"
@@ -25,7 +24,7 @@ func New(image string) (*Image, error) {
 }
 
 func (i *Image) Id() string {
-	return fmt.Sprintf("image-%x", md5.Sum([]byte(i.image)))
+	return fmt.Sprintf("image-%s", target.HashForID([]byte(i.image)))
 }
 
 func (i *Image) Name() string {
