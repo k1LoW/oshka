@@ -71,3 +71,12 @@ func (e *Executer) Execute(ctx context.Context, t target.Target, dir string) err
 func (e *Executer) Results() []*Result {
 	return e.results
 }
+
+func (e *Executer) ExitCode() int {
+	for _, r := range e.results {
+		if r.ExitCode != 0 {
+			return 1
+		}
+	}
+	return 0
+}

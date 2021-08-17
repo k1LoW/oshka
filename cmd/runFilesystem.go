@@ -70,6 +70,8 @@ var filesystemCmd = &cobra.Command{
 			table.Append([]string{r.Target.Name(), r.Target.Type(), strconv.Itoa(r.ExitCode)})
 		}
 		table.Render()
+
+		os.Exit(e.ExitCode())
 		return nil
 	},
 }
