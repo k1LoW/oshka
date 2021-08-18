@@ -1,6 +1,6 @@
 # oshka
 
-`oshka`【óuʃkə】is a tool for extracting nested CI/CD supply chains and executing commands.
+`oshka`【oʊʃkə】is a tool for extracting nested CI/CD supply chains and executing commands.
 
 ## Concept
 
