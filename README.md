@@ -161,6 +161,51 @@ $
 
 </details>
 
+### Scan remote Git repository and supply chains for vulnerabilities using Trivy
+
+``` console
+$ oshka run repo github.com/rails/rails
+```
+
+<details>
+
+<summary>Result</summary>
+
+``` console
+$ oshka run repo github.com/cli/cli
+2021-08-31T00:46:39+09:00 [INFO] Create temporary directory for extracting supply chains: /var/folders/fp/hk95_wsj7s18mmc9drvrxdp1tt294n/T/
+2021-08-31T00:46:39+09:00 [INFO] Extract repo github.com/cli/cli to /var/folders/fp/hk95_wsj7s18mmc9drvrxdp1tt294n/T/github.com/cli/cli
+Enumerating objects: 26086, done.
+Counting objects: 100% (743/743), done.
+Compressing objects: 100% (579/579), done.
+Total 26086 (delta 256), reused 412 (delta 160), pack-reused 25343
+2021-08-31T00:46:46+09:00 [INFO] Run `trivy fs --exit-code 1 .` on /var/folders/fp/hk95_wsj7s18mmc9drvrxdp1tt294n/T/github.com/cli/cli
+2021-08-31T00:46:47.049+0900    INFO    Using your github token
+2021-08-31T00:46:47.130+0900    INFO    Number of language-specific files: 1
+2021-08-31T00:46:47.130+0900    INFO    Detecting gomod vulnerabilities...
+
+[...]
+
+2021-08-31T00:48:05+09:00 [INFO] Cleanup temporary directory for extracting supply chains: /var/folders/fp/hk95_wsj7s18mmc9drvrxdp1tt294n/T/
+
+Run results
+===========
++----------------------------------------+--------+--------------------------+-----------+
+|                  NAME                  |  TYPE  |         COMMAND          | EXIT CODE |
++----------------------------------------+--------+--------------------------+-----------+
+| github.com/cli/cli                     | repo   | trivy fs --exit-code 1 . | 1         |
+| actions/setup-go@v2                    | action | trivy fs --exit-code 1 . | 0         |
+| mislav/bump-homebrew-formula-action@v1 | action | trivy fs --exit-code 1 . | 0         |
+| goreleaser/goreleaser-action@v2        | action | trivy fs --exit-code 1 . | 0         |
+| actions/checkout@v2                    | action | trivy fs --exit-code 1 . | 1         |
+| github/codeql-action/init@v1           | action | trivy fs --exit-code 1 . | 1         |
+| github/codeql-action/analyze@v1        | action | trivy fs --exit-code 1 . | 1         |
++----------------------------------------+--------+--------------------------+-----------+
+$
+```
+
+</details>
+
 ### Scan action of GitHub Actions and supply chains for vulnerabilities using Trivy
 
 ``` console
