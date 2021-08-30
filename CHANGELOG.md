@@ -1,3 +1,8 @@
+## [v0.3.0](https://github.com/k1LoW/oshka/compare/v0.2.0...v0.3.0) (2021-08-31)
+
+* Add `run repo` command [#7](https://github.com/k1LoW/oshka/pull/7) ([k1LoW](https://github.com/k1LoW))
+* Add executed commands to results [#6](https://github.com/k1LoW/oshka/pull/6) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.2.0](https://github.com/k1LoW/oshka/compare/v0.1.0...v0.2.0) (2021-08-18)
 
 * Analyze jobs.<job_id>.services: [#5](https://github.com/k1LoW/oshka/pull/5) ([k1LoW](https://github.com/k1LoW))
