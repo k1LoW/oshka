@@ -54,6 +54,7 @@ func (r *Repo) Extract(ctx context.Context, dest string) error {
 			},
 			URL:      u,
 			Progress: os.Stdout,
+			Depth:    1,
 		})
 		if err == nil {
 			et := new(target.ExtractedTarget)
@@ -71,6 +72,7 @@ func (r *Repo) Extract(ctx context.Context, dest string) error {
 	_, err := git.PlainClone(dest, false, &git.CloneOptions{
 		URL:      u,
 		Progress: os.Stdout,
+		Depth:    1,
 	})
 	if err != nil {
 		return err

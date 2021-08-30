@@ -38,8 +38,8 @@ import (
 var repoCmd = &cobra.Command{
 	Use:     "repo [REPO]",
 	Aliases: []string{"r"},
-	Short:   "(alias: r ) execute commands starting from remote git repository",
-	Long:    `(alias: r ) execute commands starting from remote git repository.`,
+	Short:   "(alias: r ) execute commands starting from remote Git repository",
+	Long:    `(alias: r ) execute commands starting from remote Git repository.`,
 	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
