@@ -253,6 +253,7 @@ $ oshka run fs . --depth 3
 - GitHub Actions
     - Workflow file (ex. `.github/workflows/*.yml` )
     - Action file (ex. `action.yml` )
+        - When using Dockerfile, require `docker` for building image.
 - Docker image
 
 ## References
