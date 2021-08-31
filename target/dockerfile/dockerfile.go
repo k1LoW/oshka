@@ -112,6 +112,9 @@ func (d *Dockerfile) Extract(ctx context.Context, dest string) error {
 		return err
 	}
 	err = <-errChan
+	if err != nil {
+		return err
+	}
 
 	digest, err := img.Digest()
 	if err != nil {

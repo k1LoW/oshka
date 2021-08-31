@@ -87,7 +87,9 @@ func hashDir(dir string) (string, error) {
 		if err != nil {
 			return err
 		}
-		io.WriteString(hash, fmt.Sprintf("%s:%d", path, fi.Size()))
+		if _, err := io.WriteString(hash, fmt.Sprintf("%s:%d", path, fi.Size())); err != nil {
+			return err
+		}
 		return nil
 	}); err != nil {
 		return "", err
