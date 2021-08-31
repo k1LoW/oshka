@@ -15,6 +15,8 @@ type Target interface {
 	Id() string
 	Name() string
 	Type() string
+	Hash() string
+	HashType() string
 	Dir() string
 	Extract(ctx context.Context, dest string) error
 }
@@ -25,6 +27,8 @@ type ExtractedTarget struct {
 	Id           string    `json:"id"`
 	Name         string    `json:"name"`
 	Type         string    `json:"type"`
+	Hash         string    `json:"hash"`
+	HashType     string    `json:"hash_type"`
 	ExtractedDir string    `json:"extracted_dir"`
 	ExtractedAt  time.Time `json:"extracted_at"`
 
@@ -35,6 +39,8 @@ func (e *ExtractedTarget) SetTarget(t Target, dest string) error {
 	e.Id = t.Id()
 	e.Name = t.Name()
 	e.Type = t.Type()
+	e.Hash = t.Hash()
+	e.HashType = t.HashType()
 	e.ExtractedDir = dest
 	e.ExtractedAt = time.Now()
 	return nil

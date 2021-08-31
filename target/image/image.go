@@ -15,6 +15,7 @@ var _ target.Target = (*Image)(nil)
 
 type Image struct {
 	image string
+	hash  string
 }
 
 func New(image string) (*Image, error) {
@@ -33,6 +34,14 @@ func (i *Image) Name() string {
 
 func (i *Image) Type() string {
 	return "image"
+}
+
+func (i *Image) Hash() string {
+	return i.hash
+}
+
+func (i *Image) HashType() string {
+	return "digest"
 }
 
 func (i *Image) Dir() string {
@@ -58,6 +67,12 @@ func (i *Image) Extract(ctx context.Context, dest string) error {
 	if err != nil {
 		return err
 	}
+
+	digest, err := img.Digest()
+	if err != nil {
+		return err
+	}
+	i.hash = digest.String()
 
 	et := new(target.ExtractedTarget)
 	if err := et.SetTarget(i, dest); err != nil {

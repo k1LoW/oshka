@@ -15,7 +15,8 @@ import (
 var _ target.Target = (*Repo)(nil)
 
 type Repo struct {
-	url string
+	url  string
+	hash string
 }
 
 func New(repo string) (*Repo, error) {
@@ -40,6 +41,14 @@ func (r *Repo) Type() string {
 	return "repo"
 }
 
+func (r *Repo) Hash() string {
+	return r.hash
+}
+
+func (r *Repo) HashType() string {
+	return "commit hash"
+}
+
 func (r *Repo) Dir() string {
 	return r.Name()
 }
@@ -47,7 +56,7 @@ func (r *Repo) Dir() string {
 func (r *Repo) Extract(ctx context.Context, dest string) error {
 	u := fmt.Sprintf("%s.git", r.url)
 	if os.Getenv("GITHUB_TOKEN") != "" {
-		_, err := git.PlainClone(dest, false, &git.CloneOptions{
+		gitRepo, err := git.PlainClone(dest, false, &git.CloneOptions{
 			Auth: &http.BasicAuth{
 				Username: "dummy",
 				Password: os.Getenv("GITHUB_TOKEN"),
@@ -57,6 +66,12 @@ func (r *Repo) Extract(ctx context.Context, dest string) error {
 			Depth:    1,
 		})
 		if err == nil {
+			ref, err := gitRepo.Head()
+			if err != nil {
+				return err
+			}
+			r.hash = ref.Hash().String()
+
 			et := new(target.ExtractedTarget)
 			if err := et.SetTarget(r, dest); err != nil {
 				return err
@@ -69,7 +84,7 @@ func (r *Repo) Extract(ctx context.Context, dest string) error {
 		}
 		// fallback to the code following here
 	}
-	_, err := git.PlainClone(dest, false, &git.CloneOptions{
+	gitRepo, err := git.PlainClone(dest, false, &git.CloneOptions{
 		URL:      u,
 		Progress: os.Stdout,
 		Depth:    1,
@@ -77,6 +92,12 @@ func (r *Repo) Extract(ctx context.Context, dest string) error {
 	if err != nil {
 		return err
 	}
+
+	ref, err := gitRepo.Head()
+	if err != nil {
+		return err
+	}
+	r.hash = ref.Hash().String()
 
 	et := new(target.ExtractedTarget)
 	if err := et.SetTarget(r, dest); err != nil {
