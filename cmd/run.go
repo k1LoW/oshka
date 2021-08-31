@@ -22,6 +22,13 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"fmt"
+	"os"
+	"strconv"
+
+	"github.com/k1LoW/oshka/executer"
+	"github.com/k1LoW/oshka/runner"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -39,4 +46,17 @@ var runCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(runCmd)
+}
+
+func showResult(cmd *cobra.Command, r *runner.Runner, e *executer.Executer) {
+	cmd.Println("")
+	cmd.Println("Run results")
+	cmd.Println("===========")
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Name", "Type", "Command", "Exit Code", "Hash"})
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	for _, r := range e.Results() {
+		table.Append([]string{r.Target.Name(), r.Target.Type(), r.Command, strconv.Itoa(r.ExitCode), fmt.Sprintf("%s (%s)", r.Target.Hash(), r.Target.HashType())})
+	}
+	table.Render()
 }

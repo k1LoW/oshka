@@ -24,13 +24,11 @@ package cmd
 import (
 	"context"
 	"os"
-	"strconv"
 
 	"github.com/k1LoW/oshka/executer"
 	"github.com/k1LoW/oshka/runner"
 	"github.com/k1LoW/oshka/target"
 	"github.com/k1LoW/oshka/target/image"
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -60,16 +58,7 @@ var imageCmd = &cobra.Command{
 			return err
 		}
 
-		cmd.Println("")
-		cmd.Println("Run results")
-		cmd.Println("===========")
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetHeader([]string{"Name", "Type", "Command", "Exit Code"})
-		table.SetAlignment(tablewriter.ALIGN_LEFT)
-		for _, r := range e.Results() {
-			table.Append([]string{r.Target.Name(), r.Target.Type(), r.Command, strconv.Itoa(r.ExitCode)})
-		}
-		table.Render()
+		showResult(cmd, r, e)
 
 		os.Exit(e.ExitCode())
 		return nil

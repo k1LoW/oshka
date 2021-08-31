@@ -18,6 +18,7 @@ var _ target.Target = (*Action)(nil)
 
 type Action struct {
 	action string
+	hash   string
 }
 
 func New(action string) (*Action, error) {
@@ -36,6 +37,14 @@ func (a *Action) Name() string {
 
 func (a *Action) Type() string {
 	return "action"
+}
+
+func (a *Action) Hash() string {
+	return a.hash
+}
+
+func (a *Action) HashType() string {
+	return "commit hash"
 }
 
 func (a *Action) Dir() string {
@@ -84,6 +93,12 @@ func (a *Action) Extract(ctx context.Context, dest string) error {
 					}
 				}
 			}
+
+			ref, err := r.Head()
+			if err != nil {
+				return err
+			}
+			a.hash = ref.Hash().String()
 
 			et := new(target.ExtractedTarget)
 			if err := et.SetTarget(a, dest); err != nil {
@@ -134,6 +149,12 @@ func (a *Action) Extract(ctx context.Context, dest string) error {
 			}
 		}
 	}
+
+	ref, err := r.Head()
+	if err != nil {
+		return err
+	}
+	a.hash = ref.Hash().String()
 
 	et := new(target.ExtractedTarget)
 	if err := et.SetTarget(a, dest); err != nil {

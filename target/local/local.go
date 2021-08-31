@@ -2,8 +2,11 @@ package local
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/k1LoW/oshka/target"
 	"github.com/otiai10/copy"
@@ -12,7 +15,8 @@ import (
 var _ target.Target = (*Local)(nil)
 
 type Local struct {
-	dir string
+	dir  string
+	hash string
 }
 
 func New(dir string) (*Local, error) {
@@ -41,6 +45,14 @@ func (l *Local) Type() string {
 	return "local"
 }
 
+func (l *Local) Hash() string {
+	return l.hash
+}
+
+func (l *Local) HashType() string {
+	return "dir hash"
+}
+
 func (l *Local) Extract(ctx context.Context, dest string) error {
 	if l.dir == dest {
 		return nil
@@ -49,6 +61,12 @@ func (l *Local) Extract(ctx context.Context, dest string) error {
 	if err := copy.Copy(l.dir, dest, copy.Options{}); err != nil {
 		return err
 	}
+
+	hash, err := hashDir(dest)
+	if err != nil {
+		return err
+	}
+	l.hash = hash
 
 	et := new(target.ExtractedTarget)
 	if err := et.SetTarget(l, dest); err != nil {
@@ -59,4 +77,23 @@ func (l *Local) Extract(ctx context.Context, dest string) error {
 	}
 
 	return nil
+}
+
+func hashDir(dir string) (string, error) {
+
+	hash := sha256.New()
+
+	if err := filepath.Walk(dir, func(path string, fi os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if _, err := io.WriteString(hash, fmt.Sprintf("%s:%d", path, fi.Size())); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%x", hash.Sum(nil)), nil
 }

@@ -22,6 +22,7 @@ type Dockerfile struct {
 	from       string
 	dockerfile string
 	files      map[string][]byte
+	hash       string
 }
 
 func New(from, dockerfile string, files map[string][]byte) (*Dockerfile, error) {
@@ -45,6 +46,14 @@ func (d *Dockerfile) Name() string {
 
 func (d *Dockerfile) Type() string {
 	return "dockerfile"
+}
+
+func (d *Dockerfile) Hash() string {
+	return d.hash
+}
+
+func (d *Dockerfile) HashType() string {
+	return "digest"
 }
 
 func (d *Dockerfile) Dir() string {
@@ -103,6 +112,15 @@ func (d *Dockerfile) Extract(ctx context.Context, dest string) error {
 		return err
 	}
 	err = <-errChan
+	if err != nil {
+		return err
+	}
+
+	digest, err := img.Digest()
+	if err != nil {
+		return err
+	}
+	d.hash = digest.String()
 
 	et := new(target.ExtractedTarget)
 	if err := et.SetTarget(d, dest); err != nil {
