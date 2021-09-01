@@ -4,7 +4,7 @@
 
 ## Concept
 
-Security checks should be performed not only on the source code of the repository, but also on the code of the third-party actions of GitHub Actions and Docker images that compose the CI/CD.
+Security checks should be performed not only on the source code of the repository but also on the code of the third-party actions of GitHub Actions and Docker images that compose the CI/CD.
 
 The primary purpose of `oshka` is for the continuous security check of the nested CI/CD supply chains ( So the default execution `--command` is `trivy fs --exit-code 1 .` ).
 
