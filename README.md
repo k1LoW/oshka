@@ -268,15 +268,15 @@ Total: 4 (UNKNOWN: 0, LOW: 0, MEDIUM: 1, HIGH: 3, CRITICAL: 0)
 
 Run results
 ===========
-+----------------------------------+--------+--------------------------+-----------+------------------------------------------------------------------+
-|               NAME               |  TYPE  |         COMMAND          | EXIT CODE |                               HASH                               |
-+----------------------------------+--------+--------------------------+-----------+------------------------------------------------------------------+
-| .                                | local  | trivy fs --exit-code 1 . | 1         | 2d978015910831113e1895405220d3c83dfd2e49316d282ac07b7746a00e4234 |
-|                                  |        |                          |           | (dir hash)                                                       |
-| actions/setup-go@v2              | action | trivy fs --exit-code 1 . | 0         | 331ce1d993939866bb63c32c6cbbfd48fa76fc57 (commit hash)           |
-| actions/checkout@v2              | action | trivy fs --exit-code 1 . | 1         | 5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f (commit hash)           |
-| golangci/golangci-lint-action@v2 | action | trivy fs --exit-code 1 . | 1         | 5c56cd6c9dc07901af25baab6f2b0d9f3b7c3018 (commit hash)           |
-+----------------------------------+--------+--------------------------+-----------+------------------------------------------------------------------+
++----------------------------------+--------+--------------------------+-----------+-------+------------------------------------------------------------------+
+|               NAME               |  TYPE  |         COMMAND          | EXIT CODE | DEPTH |                               HASH                               |
++----------------------------------+--------+--------------------------+-----------+-------+------------------------------------------------------------------+
+| .                                | local  | trivy fs --exit-code 1 . | 1         | 0     | 264b356a52a13e300b4635cf54b490e970e2ec0816678bbd81be62f5ad1f147d |
+|                                  |        |                          |           |       | (dir hash)                                                       |
+| actions/setup-go@v2              | action | trivy fs --exit-code 1 . | 0         | 1     | 331ce1d993939866bb63c32c6cbbfd48fa76fc57 (commit hash)           |
+| actions/checkout@v2              | action | trivy fs --exit-code 1 . | 1         | 1     | 5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f (commit hash)           |
+| golangci/golangci-lint-action@v2 | action | trivy fs --exit-code 1 . | 1         | 1     | 5c56cd6c9dc07901af25baab6f2b0d9f3b7c3018 (commit hash)           |
++----------------------------------+--------+--------------------------+-----------+-------+------------------------------------------------------------------+
 $
 ```
 
@@ -311,24 +311,20 @@ Total 26086 (delta 256), reused 412 (delta 160), pack-reused 25343
 
 Run results
 ===========
-+----------------------------------------+--------+--------------------------+-----------+------------------------------------------+
-|                  NAME                  |  TYPE  |         COMMAND          | EXIT CODE |                   HASH                   |
-+----------------------------------------+--------+--------------------------+-----------+------------------------------------------+
-| github.com/cli/cli                     | repo   | trivy fs --exit-code 1 . | 1         | e6ff77ce73c201b0ee36d2b802ea45e9e1ad1822 |
-|                                        |        |                          |           | (commit hash)                            |
-| github/codeql-action/analyze@v1        | action | trivy fs --exit-code 1 . | 1         | 33f3438c1d59883f5e769fdf2b6adb6794d91d0f |
-|                                        |        |                          |           | (commit hash)                            |
-| actions/setup-go@v2                    | action | trivy fs --exit-code 1 . | 0         | 331ce1d993939866bb63c32c6cbbfd48fa76fc57 |
-|                                        |        |                          |           | (commit hash)                            |
-| goreleaser/goreleaser-action@v2        | action | trivy fs --exit-code 1 . | 0         | 5a54d7e660bda43b405e8463261b3d25631ffe86 |
-|                                        |        |                          |           | (commit hash)                            |
-| mislav/bump-homebrew-formula-action@v1 | action | trivy fs --exit-code 1 . | 0         | d631ddd46015c5c3c4e3f0da275c15d99475d760 |
-|                                        |        |                          |           | (commit hash)                            |
-| actions/checkout@v2                    | action | trivy fs --exit-code 1 . | 1         | 5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f |
-|                                        |        |                          |           | (commit hash)                            |
-| github/codeql-action/init@v1           | action | trivy fs --exit-code 1 . | 1         | 33f3438c1d59883f5e769fdf2b6adb6794d91d0f |
-|                                        |        |                          |           | (commit hash)                            |
-+----------------------------------------+--------+--------------------------+-----------+------------------------------------------+
++-------------------------+--------+--------------------------+-----------+-------+------------------------------------------+
+|          NAME           |  TYPE  |         COMMAND          | EXIT CODE | DEPTH |                   HASH                   |
++-------------------------+--------+--------------------------+-----------+-------+------------------------------------------+
+| github.com/rails/rails  | repo   | trivy fs --exit-code 1 . | 1         | 0     | c236ff686c6fa987924b8eefeec93c2abcc07843 |
+|                         |        |                          |           |       | (commit hash)                            |
+| actions/checkout@v2     | action | trivy fs --exit-code 1 . | 1         | 1     | 5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f |
+|                         |        |                          |           |       | (commit hash)                            |
+| actions/setup-python@v2 | action | trivy fs --exit-code 1 . | 0         | 1     | dc73133d4da04e56a135ae2246682783cc7c7cb6 |
+|                         |        |                          |           |       | (commit hash)                            |
+| ruby/setup-ruby@v1      | action | trivy fs --exit-code 1 . | 1         | 1     | dbac26120bf2cab885aa98ecb4d22838ae969776 |
+|                         |        |                          |           |       | (commit hash)                            |
+| actions/cache@v1        | action | trivy fs --exit-code 1 . | 1         | 1     | 70655ec8323daeeaa7ef06d7c56e1b9191396cbe |
+|                         |        |                          |           |       | (commit hash)                            |
++-------------------------+--------+--------------------------+-----------+-------+------------------------------------------+
 $
 ```
 
@@ -353,22 +349,26 @@ $ oshka run action actions/cache@v2
 
 Run results
 ===========
-+-----------------------------------+--------+--------------------------+-----------+-------------------------------------------------------------------------+
-|               NAME                |  TYPE  |         COMMAND          | EXIT CODE |                                  HASH                                   |
-+-----------------------------------+--------+--------------------------+-----------+-------------------------------------------------------------------------+
-| actions/cache@v2                  | action | trivy fs --exit-code 1 . | 0         | c64c572235d810460d0d6876e9c705ad5002b353                                |
-|                                   |        |                          |           | (commit hash)                                                           |
-| github/codeql-action/analyze@v1   | action | trivy fs --exit-code 1 . | 1         | 33f3438c1d59883f5e769fdf2b6adb6794d91d0f                                |
-|                                   |        |                          |           | (commit hash)                                                           |
-| ubuntu:latest                     | image  | trivy fs --exit-code 1 . | 1         | sha256:10cbddb6cf8568f56584ccb6c866203e68ab8e621bb87038e254f6f27f955bbe |
-|                                   |        |                          |           | (digest)                                                                |
-| datadog/squid:latest              | image  | trivy fs --exit-code 1 . | 1         | sha256:f7d19d5e3f4163771291d91de393ce667f2327a3e080c39b9b7ea9e19f91488f |
-|                                   |        |                          |           | (digest)                                                                |
-| actions/setup-node@v1             | action | trivy fs --exit-code 1 . | 1         | f1f314fca9dfce2769ece7d933488f076716723e (commit hash)                  |
-| actions/checkout@v2               | action | trivy fs --exit-code 1 . | 1         | 5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f (commit hash)                  |
-| github/codeql-action/init@v1      | action | trivy fs --exit-code 1 . | 1         | 33f3438c1d59883f5e769fdf2b6adb6794d91d0f (commit hash)                  |
-| github/codeql-action/autobuild@v1 | action | trivy fs --exit-code 1 . | 1         | 33f3438c1d59883f5e769fdf2b6adb6794d91d0f (commit hash)                  |
-+-----------------------------------+--------+--------------------------+-----------+-------------------------------------------------------------------------+
++-----------------------------------+--------+--------------------------+-----------+-------+-------------------------------------------------------------------------+
+|               NAME                |  TYPE  |         COMMAND          | EXIT CODE | DEPTH |                                  HASH                                   |
++-----------------------------------+--------+--------------------------+-----------+-------+-------------------------------------------------------------------------+
+| actions/cache@v2                  | action | trivy fs --exit-code 1 . | 0         | 0, 1  | c64c572235d810460d0d6876e9c705ad5002b353                                |
+|                                   |        |                          |           |       | (commit hash)                                                           |
+| actions/checkout@v2               | action | trivy fs --exit-code 1 . | 1         | 1     | 5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f                                |
+|                                   |        |                          |           |       | (commit hash)                                                           |
+| github/codeql-action/init@v1      | action | trivy fs --exit-code 1 . | 1         | 1     | 33f3438c1d59883f5e769fdf2b6adb6794d91d0f                                |
+|                                   |        |                          |           |       | (commit hash)                                                           |
+| github/codeql-action/autobuild@v1 | action | trivy fs --exit-code 1 . | 1         | 1     | 33f3438c1d59883f5e769fdf2b6adb6794d91d0f                                |
+|                                   |        |                          |           |       | (commit hash)                                                           |
+| github/codeql-action/analyze@v1   | action | trivy fs --exit-code 1 . | 1         | 1     | 33f3438c1d59883f5e769fdf2b6adb6794d91d0f                                |
+|                                   |        |                          |           |       | (commit hash)                                                           |
+| actions/setup-node@v1             | action | trivy fs --exit-code 1 . | 1         | 1     | f1f314fca9dfce2769ece7d933488f076716723e                                |
+|                                   |        |                          |           |       | (commit hash)                                                           |
+| ubuntu:latest                     | image  | trivy fs --exit-code 1 . | 1         | 1     | sha256:10cbddb6cf8568f56584ccb6c866203e68ab8e621bb87038e254f6f27f955bbe |
+|                                   |        |                          |           |       | (digest)                                                                |
+| datadog/squid:latest              | image  | trivy fs --exit-code 1 . | 1         | 1     | sha256:f7d19d5e3f4163771291d91de393ce667f2327a3e080c39b9b7ea9e19f91488f |
+|                                   |        |                          |           |       | (digest)                                                                |
++-----------------------------------+--------+--------------------------+-----------+-------+-------------------------------------------------------------------------+
 $
 ```
 
