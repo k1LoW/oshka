@@ -388,6 +388,55 @@ $ oshka run fs . --depth 3
         - When using Dockerfile, require `docker` for building image.
 - Docker image
 
+## Install
+
+**deb:**
+
+Use [dpkg-i-from-url](https://github.com/k1LoW/dpkg-i-from-url)
+
+``` console
+$ export OSHKA_VERSION=X.X.X
+$ curl -L https://git.io/dpkg-i-from-url | bash -s -- https://github.com/k1LoW/oshka/releases/download/v$OSHKA_VERSION/oshka_$OSHKA_VERSION-1_amd64.deb
+```
+
+**RPM:**
+
+``` console
+$ export OSHKA_VERSION=X.X.X
+$ yum install https://github.com/k1LoW/oshka/releases/download/v$OSHKA_VERSION/oshka_$OSHKA_VERSION-1_amd64.rpm
+```
+
+**apk:**
+
+Use [apk-add-from-url](https://github.com/k1LoW/apk-add-from-url)
+
+``` console
+$ export OSHKA_VERSION=X.X.X
+$ curl -L https://git.io/apk-add-from-url | sh -s -- https://github.com/k1LoW/oshka/releases/download/v$OSHKA_VERSION/oshka_$OSHKA_VERSION-1_amd64.apk
+```
+
+**homebrew tap:**
+
+```console
+$ brew install k1LoW/tap/oshka
+```
+
+**manually:**
+
+Download binary from [releases page](https://github.com/k1LoW/oshka/releases)
+
+**go get:**
+
+```console
+$ go get github.com/k1LoW/oshka
+```
+
+**docker:**
+
+```console
+$ docker pull ghcr.io/k1low/oshka:latest
+```
+
 ## References
 
 - [aquasecurity/trivy](https://github.com/aquasecurity/trivy): Scanner for vulnerabilities in container images, file systems, and Git repositories, as well as for configuration issues
