@@ -1,3 +1,8 @@
+## [v0.4.0](https://github.com/k1LoW/oshka/compare/v0.3.0...v0.4.0) (2021-09-02)
+
+* Show depth [#9](https://github.com/k1LoW/oshka/pull/9) ([k1LoW](https://github.com/k1LoW))
+* Show hash [#8](https://github.com/k1LoW/oshka/pull/8) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.3.0](https://github.com/k1LoW/oshka/compare/v0.2.0...v0.3.0) (2021-08-31)
 
 * Add `run repo` command [#7](https://github.com/k1LoW/oshka/pull/7) ([k1LoW](https://github.com/k1LoW))
