@@ -50,11 +50,11 @@ var filesystemCmd = &cobra.Command{
 			return err
 		}
 		targets := []target.Target{t}
-		r, err := runner.New(targets, e)
+		r, err := runner.New(e)
 		if err != nil {
 			return err
 		}
-		if err := r.Run(ctx, depth); err != nil {
+		if err := r.Run(ctx, targets, depth); err != nil {
 			return err
 		}
 

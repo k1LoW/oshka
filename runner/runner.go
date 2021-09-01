@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 
 	"github.com/k1LoW/oshka/analyzer"
 	"github.com/k1LoW/oshka/executer"
@@ -13,30 +15,44 @@ import (
 )
 
 type Runner struct {
-	targets []target.Target
-	e       *executer.Executer
+	e            *executer.Executer
+	targetDepths map[string]Depths
 }
 
-func New(targets []target.Target, e *executer.Executer) (*Runner, error) {
+type Depths []int
+
+func (d Depths) String() string {
+	s := []string{}
+	for _, i := range d {
+		s = append(s, strconv.Itoa(i))
+	}
+	return strings.Join(s, ", ")
+}
+
+func New(e *executer.Executer) (*Runner, error) {
 	return &Runner{
-		targets: targets,
-		e:       e,
+		e:            e,
+		targetDepths: map[string]Depths{},
 	}, nil
 }
 
-func (r *Runner) Run(ctx context.Context, depth int) error {
+func (r *Runner) Run(ctx context.Context, targets []target.Target, depth int) error {
 	extractRoot := os.TempDir()
 	log.Info().Msg(fmt.Sprintf("Create temporary directory for extracting supply chains: %s", extractRoot))
 	defer func() {
 		_ = os.RemoveAll(extractRoot)
 		log.Info().Msg(fmt.Sprintf("Cleanup temporary directory for extracting supply chains: %s", extractRoot))
 	}()
-	targets := r.targets
 	var err error
 	i := 0
 	for {
 		dirs := []string{}
 		for _, t := range targets {
+			if _, ok := r.targetDepths[t.Id()]; !ok {
+				r.targetDepths[t.Id()] = []int{}
+			}
+			r.targetDepths[t.Id()] = append(r.targetDepths[t.Id()], i)
+
 			dest := filepath.Join(extractRoot, t.Dir())
 			if _, err := os.Stat(dest); err == nil {
 				// already extracted
@@ -61,4 +77,8 @@ func (r *Runner) Run(ctx context.Context, depth int) error {
 		}
 	}
 	return nil
+}
+
+func (r *Runner) TargetDepths(id string) Depths {
+	return r.targetDepths[id]
 }
