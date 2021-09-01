@@ -56,7 +56,7 @@ func showResult(cmd *cobra.Command, r *runner.Runner, e *executer.Executer) {
 	table.SetHeader([]string{"Name", "Type", "Command", "Exit Code", "Depth", "Hash"})
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 	for _, res := range e.Results() {
-		table.Append([]string{res.Target.Name(), res.Target.Type(), res.Command, strconv.Itoa(res.ExitCode), fmt.Sprintf("%s", r.TargetDepths(res.Target.Id())), fmt.Sprintf("%s (%s)", res.Target.Hash(), res.Target.HashType())})
+		table.Append([]string{res.Target.Name(), res.Target.Type(), res.Command, strconv.Itoa(res.ExitCode), r.TargetDepths(res.Target.Id()).String(), fmt.Sprintf("%s (%s)", res.Target.Hash(), res.Target.HashType())})
 	}
 	table.Render()
 }
