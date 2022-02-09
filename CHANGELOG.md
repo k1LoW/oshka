@@ -1,3 +1,7 @@
+## [v0.4.1](https://github.com/k1LoW/oshka/compare/v0.4.0...v0.4.1) (2022-02-09)
+
+* Support darwin arm64 [#10](https://github.com/k1LoW/oshka/pull/10) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.4.0](https://github.com/k1LoW/oshka/compare/v0.3.0...v0.4.0) (2021-09-02)
 
 * Show depth [#9](https://github.com/k1LoW/oshka/pull/9) ([k1LoW](https://github.com/k1LoW))
